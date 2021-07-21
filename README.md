@@ -1,0 +1,85 @@
+# Knative is not for serverless functions only!
+
+Maybe you think that [Knative](https://knative.dev) is only useful for serverless functions,
+but that's not the case. Not only Knative simplifies the way you deploy
+your Kubernetes app (writing less YAML is great for your mental health!),
+but you also get new features such as
+[autoscaling](https://knative.dev/docs/serving/autoscaling/) for free.
+
+This project shows how to convert an existing Kubernetes app to Knative.
+In this repository, you'll only find manifests, not source code: find more at
+[github.com/alexandreroman/k8s-todo-app](https://github.com/alexandreroman/k8s-todo-app)
+to learn about the app.
+
+![Application screenshot](/images/app.png)
+
+This app is made of several components:
+
+- **frontend**: a nginx container hosting HTML / JS / CSS files, leveraging Vue.js
+- **backend**: a Spring Boot app exposing a simple REST API for getting / storing todo entries
+- **database**: a PostgreSQL database instance storing todo entries
+- **API gateway**: a Spring Cloud Gateway instance in front of all components, which is the only entry point behind an ingress route
+
+Starting from the existing app architecture, this Knative variant replaces existing
+Kubernetes deployments / services with
+[Knative services](https://knative.dev/docs/serving/).
+
+![Application architecture](/images/architecture.png)
+
+You end up with Knative services for the frontend and backend components.
+Pod instances for these components are created when you actually use the app:
+should you stop using the app, these pod instances would be automatically destroyed.
+
+Look at the [Knative service definitions](config/kservice.yml):
+you can reuse the `template` section from your existing `Deployment` definitions
+(`image`, `env`, `volumes`, etc), but you don't need to include liveness/readiness probes
+nor `Service` definitions, since those features are covered by Knative.
+
+```yaml
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: kn-todo
+  labels:
+    networking.knative.dev/visibility: cluster-local
+spec:
+  template:
+    spec:
+      containers:
+      - name: frontend
+        image: alexandreroman/kn-todo-frontend
+        resources:
+          requests:
+            memory: 256M
+          limits:
+            memory: 256M
+```
+
+## Prerequisites
+
+Please read [this page about prerequisites](https://github.com/alexandreroman/k8s-todo-app#prerequisites) first.
+
+This project has been tested with
+[Cloud Native Runtimes](https://tanzu.vmware.com/content/blog/join-cloud-native-runtimes-vmware-tanzu-serverless-public-beta), a Knative distribution from
+[VMware Tanzu](https://tanzu.vmware.com/). You may use any Knative 0.23+ distribution.
+
+## How to use it?
+
+This project relies on [ytt](https://carvel.dev/ytt/) to generate Kubernetes manifests
+which fit your environment.
+
+Please read [this page](https://github.com/alexandreroman/k8s-todo-app#how-to-use-it)
+to find out how to deploy this app, since this repository uses the same configuration layout.
+
+## Contribute
+
+Contributions are always welcome!
+
+Feel free to open issues & send PR.
+
+## License
+
+Copyright &copy; 2021 [VMware, Inc. or its affiliates](https://vmware.com).
+
+This project is licensed under the [Apache Software License version 2.0](https://www.apache.org/licenses/LICENSE-2.0).
