@@ -61,7 +61,7 @@ spec:
 Please read [this page about prerequisites](https://github.com/alexandreroman/k8s-todo-app#prerequisites) first.
 
 This project has been tested with
-[Cloud Native Runtimes](https://tanzu.vmware.com/content/blog/join-cloud-native-runtimes-vmware-tanzu-serverless-public-beta), a Knative distribution from
+[Cloud Native Runtimes](https://tanzu.vmware.com/content/blog/cloud-native-runtimes-for-vmware-tanzu-advanced-ga), a Knative distribution from
 [VMware Tanzu](https://tanzu.vmware.com/). You may use any Knative 0.23+ distribution.
 
 ## How to use it?
