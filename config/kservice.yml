@@ -9,6 +9,11 @@ metadata:
   labels: #@ labels_for_kservice("frontend")
 spec:
   template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: #@ "{}".format(data.values.FRONTEND_SCALING_MAX)
+        autoscaling.knative.dev/metric: "rps"
+        autoscaling.knative.dev/target: #@ "{}".format(data.values.FRONTEND_RPS_MAX)
     spec:
       containers:
       - name: frontend
@@ -30,6 +35,9 @@ spec:
     metadata:
       annotations:
         autoscaling.knative.dev/scaleDownDelay: #@ "1m" if data.values.USE_NATIVE_BACKEND else "3m"
+        autoscaling.knative.dev/maxScale: #@ "{}".format(data.values.BACKEND_SCALING_MAX)
+        autoscaling.knative.dev/metric: "rps"
+        autoscaling.knative.dev/target: #@ "{}".format(data.values.BACKEND_RPS_MAX)
     spec:
       containers:
       - name: backend

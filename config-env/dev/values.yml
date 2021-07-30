@@ -2,3 +2,8 @@
 ---
 NAMESPACE: kn-todo-dev
 DOMAIN: dev.kn-todo.withtanzu.com
+
+USE_NATIVE_BACKEND: false
+
+BACKEND_SCALING_MAX: 4
+FRONTEND_SCALING_MAX: 2

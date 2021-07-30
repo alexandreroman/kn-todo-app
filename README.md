@@ -72,6 +72,38 @@ which fit your environment.
 Please read [this page](https://github.com/alexandreroman/k8s-todo-app#how-to-use-it)
 to find out how to deploy this app, since this repository uses the same configuration layout.
 
+## Load testing the app and see Knative autoscaling in action
+
+This repo includes scripts for load testing the app, leveraging
+[Vegeta](https://github.com/tsenart/vegeta).
+You need to install this tool first on your workstation.
+
+Start load testing with these scripts:
+
+```shell
+./load-testing/load-testing-frontend.sh kn-todo.example.com
+```
+
+```shell
+./load-testing/load-testing-backend.sh kn-todo.example.com
+```
+
+New pods will be created by Knative depending on the number of requests
+received by each component.
+
+You may want to tune autoscaling settings by editing the configuration file
+for your environment:
+
+```yaml
+#! Set the max number of instances for each component.
+BACKEND_SCALING_MAX: 8
+FRONTEND_SCALING_MAX: 2
+
+#! Set the target request per second for each component.
+BACKEND_RPS_MAX: 50
+FRONTEND_RPS_MAX: 200
+```
+
 ### Using kapp to deploy the app
 
 [kapp is part of the Carvel toolsuite](https://carvel.dev/kapp), along with `ytt`.

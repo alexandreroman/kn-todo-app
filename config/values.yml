@@ -18,6 +18,14 @@ DATABASE_NAME: pgdb
 #! Set to true to use a native-image for the backend component.
 USE_NATIVE_BACKEND: false
 
+#! Set the max number of instances for each component.
+BACKEND_SCALING_MAX: 1
+FRONTEND_SCALING_MAX: 1
+
+#! Set the target request per second for each component.
+BACKEND_RPS_MAX: 50
+FRONTEND_RPS_MAX: 200
+
 #! Set tag for container images.
 IMAGES:
   frontend: latest
